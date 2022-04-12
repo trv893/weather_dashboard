@@ -75,12 +75,49 @@ function apiCall(lat, long){
 };
 
 function renderData(){
+    var iconUrl = `http://openweathermap.org/img/wn/`;
+    var icon = currentData.current.weather[0].icon;
+    var iconUrlComplete = iconUrl + icon + "@2x.png";
+    var dtn = moment.unix(currentData.current.dt).utc();
+    var dtFormated = moment(dtn).format("MM-DD-YYYY");
     currentCity = $("#autocomplete").val();
     $("#location").text(currentCity);
-    $("#temp").text("Temp: " + currentData.current.temp);
+    $("#date").text(dtFormated);
+    $("#currentIcon").attr("src", iconUrlComplete);
+    $("#temp").text("Temp: " + currentData.current.temp +String.fromCharCode(176)+"F");
     $("#wind").text("Wind speed: " + currentData.current.wind_speed);
     $("#humidit").text("Humidity: " + currentData.current.humidity);
     $("#uv").text("UV Index: " + currentData.current.uvi);
+
+    // renders 5 day forcast
+    $("#fiveDayForcast").empty();
+    for(var i=0; i<5; i++){
+        var dailyForcast = currentData.daily;
+        var fivedaydt =  moment.unix(dailyForcast[i].dt).utc();
+        var fivedaydtFormatted = moment(fivedaydt).format("MM-DD-YYYY")
+        var fiveDayIcon = dailyForcast[i].weather[0].icon;
+        var fiveDayIconURL = iconUrl + fiveDayIcon + "@2x.png";
+        var fivedaytemp = dailyForcast[i].temp.day + String.fromCharCode(176)+"F";
+        var fivedaywind = dailyForcast[i].wind_speed;
+        var fivedayhumidity = dailyForcast[i].humidity;
+        var fivedayHtml = 
+            $(`<div class="card my-2" style="width: 10rem;">
+                <div class="card-body">
+                    <h5 id="5ddatei-`+i+`" class="card-title"></h5>
+                    <img id="5diconi-`+i+`" class="image w-30 img-thumbnail" src="" alt="weather icon">
+                    <p id="5dtempi-`+i+`" class="card-text"></p>
+                    <p id="5dwindi-`+i+`" class="card-text"></p>
+                    <p id="5dhumidityi-`+i+`" class="card-text"></p>
+                </div>
+            </div>`)
+        $("#fiveDayForcast").append(fivedayHtml);
+        $("#5ddatei-"+i).text(fivedaydtFormatted)
+        $("#5diconi-"+i).attr("src", fiveDayIconURL);
+        $("#5dtempi-"+i).text("Temp: " +fivedaytemp);
+        $("#5dwindi-"+i).text("Wind: " +fivedaywind+"mph");
+        $("#5dhumidityi-"+i).text("Humidity: " +fivedayhumidity);
+
+    };
 };
 
 function init() {
@@ -116,7 +153,7 @@ function renderSearchHistoryButtons(){
         // set data latt and long in seperate line
 
         var searchHistroyButtonsHtml = $(`<button type="button" class="btn my-1 btn-secondary" data-lat=`+lat+` data-long=`+long+` ">`+name+`</button>`)
-        searchHistoryhtml.prop("test", lat.toString());
+        searchHistoryhtml.prop("historyButtonEvents", lat.toString());
         $("#searchHistoryButtonList").append(searchHistroyButtonsHtml) 
     });    
 };
@@ -127,9 +164,9 @@ function StoreCities() {
     localStorage.setItem("searchHistroy", JSON.stringify(searchHistroy));
 };
 
-$("#searchHistoryButtonList").on("click", '.btn', test);
+$("#searchHistoryButtonList").on("click", '.btn', historyButtonEvents);
 
-function test(event){
+function historyButtonEvents(event){
     // currentCity = $("#autocomplete").val();
     console.log(event);
     var button = $(event.target);
@@ -139,26 +176,17 @@ function test(event){
     apiCall(buttonlat, buttonlong);
 }
 
-// var geocodingAPI = "https://maps.googleapis.com/maps/api/geocode/json?latlng=23.714224,78.961452&key=AIzaSyAsKIQtmJVAigs5WoO2ayvJYAWUpNmU0cM";
 
-// $.getJSON(geocodingAPI, function (json) {
-//     if (json.status == "OK") {
-//         //Check result 0
-//         var result = json.results[0];
-//         //look for locality tag and administrative_area_level_1
-//         var city = "";
-//         var state = "";
-//         for (var i = 0, len = result.address_components.length; i < len; i++) {
-//             var ac = result.address_components[i];
-//            if (ac.types.indexOf("administrative_area_level_1") >= 0) state = ac.short_name;
-//         }
-//         if (state != '') {
-//             console.log("Hello to you out there in " + city + ", " + state + "!");
-//         }
-//     }
+function getLocation() {
+    if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(geoSuccess);
+        } 
+    }
 
-// });
-
-
-  
-
+function geoSuccess(position) {
+    var lat = position.coords.latitude;
+    var long = position.coords.longitude;
+    apiCall(lat, long)
+    
+}
+window.onload = getLocation;

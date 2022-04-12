@@ -75,7 +75,7 @@ function apiCall(lat, long){
 };
 
 function renderData(){
-    var iconUrl = `http://openweathermap.org/img/wn/`;
+    var iconUrl = `https://openweathermap.org/img/wn/`;
     var icon = currentData.current.weather[0].icon;
     var iconUrlComplete = iconUrl + icon + "@2x.png";
     var dtn = moment.unix(currentData.current.dt).utc();

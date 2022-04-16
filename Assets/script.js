@@ -33,8 +33,8 @@ function placeSearch(){
             if (placeObject = searchHistroy[value]){
                 searchHistroy.splice(key, 1)
             };
-        console.log(key);
-        console.log(value);
+        // console.log(key);
+        // console.log(value);
 
         });
         
@@ -60,27 +60,48 @@ $("#searchbtn").click(function(){
     
 });
 
-function apiCall(lat, long){
-    var requestUrl = "https://api.openweathermap.org/data/2.5/onecall?lat="+lat+"&lon="+long+"&exclude=minutely,hourly&units=imperial&appid=a6c547c031c1288a84cffd617dc39594";
-
+function apiCall(lat1, long1){
+    var requestUrl = "https://api.openweathermap.org/data/2.5/onecall?lat="+lat1+"&lon="+long1+"&exclude=minutely,hourly&units=imperial&appid=a6c547c031c1288a84cffd617dc39594";
+    var thisLat = lat1.toString();
+    var thisLong = long1.toString();
+    console.log(thisLat)
     fetch(requestUrl)
     .then(function (response) {
         return response.json();
     })
     .then(function (data) {
         currentData = data;
-        renderData();
+        getCityNameGecode();
+            function getCityNameGecode (lat1, long1){
+                var geocodeApi ="https://maps.googleapis.com/maps/api/geocode/json?latlng="+thisLat+","+thisLong+"&key="+googleApi;
+               
+                fetch(geocodeApi)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    var thisCity = data;
+                    var current = thisCity.results[0].address_components[2].short_name;
+                    console.log(current);
+                    renderData(current);
+                    
+                })
+                
+            
+            }
+        //todo: create function that gets city name off lat and long
+        
         renderSearchHistoryButtons();
     });
 };
 
-function renderData(){
+function renderData(locationName){
     var iconUrl = `https://openweathermap.org/img/wn/`;
     var icon = currentData.current.weather[0].icon;
     var iconUrlComplete = iconUrl + icon + "@2x.png";
     var dtn = moment.unix(currentData.current.dt).utc();
     var dtFormated = moment(dtn).format("MM-DD-YYYY");
-    currentCity = $("#autocomplete").val();
+    currentCity = locationName
     $("#location").text(currentCity);
     $("#date").text(dtFormated);
     $("#currentIcon").attr("src", iconUrlComplete);
@@ -187,6 +208,7 @@ function geoSuccess(position) {
     var lat = position.coords.latitude;
     var long = position.coords.longitude;
     apiCall(lat, long)
+    $("#location").text("Current Location")
     
 }
 window.onload = getLocation;

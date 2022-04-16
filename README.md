@@ -1,5 +1,31 @@
 # weather_dashboard
 
 ## Dashboard displaying weather with search feature
+[Weather Dashboard](https://trv893.github.io/weather_dashboard/)
 
-### open weather and google maps api
+
+
+### uses open weather to generate weather data
+
+### Uses google maps api for search suggestions and reverse geocoding for place names
+
+### Designed in Bootstrap
+
+## Acceptance Criteria
+
+```
+GIVEN a weather dashboard with form inputs
+WHEN I search for a city
+THEN I am presented with current and future conditions for that city and that city is added to the search history
+WHEN I view current weather conditions for that city
+THEN I am presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, the wind speed, and the UV index
+WHEN I view the UV index
+THEN I am presented with a color that indicates whether the conditions are favorable, moderate, or severe
+WHEN I view future weather conditions for that city
+THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
+WHEN I click on a city in the search history
+THEN I am again presented with current and future conditions for that city
+```
+
+![example](./assets/Capturefull.JPG)
+![example](./assets/Capture.JPG)

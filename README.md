@@ -27,5 +27,5 @@ WHEN I click on a city in the search history
 THEN I am again presented with current and future conditions for that city
 ```
 
-![example](./assets/Capturefull.JPG)
-![example](./assets/Capture.JPG)
+![example](Assets/Capturefull.JPG)
+![example](Assets/Capture.JPG)

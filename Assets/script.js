@@ -1,4 +1,4 @@
-const googleApi = "AIzaSyAsKIQtmJVAigs5WoO2ayvJYAWUpNmU0cM"
+const googleApi = ""
 const openWeatherApi = "a6c547c031c1288a84cffd617dc39594"
 var lat = null;
 var long = null;
